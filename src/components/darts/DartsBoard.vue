@@ -8,6 +8,7 @@
           Teraz kolej:
           {{ selectedUsers[selectedUserIndex].userName }}
           <button @click="nextPlayer">Następny gracz</button>
+          <button v-if="logsOfShots.length > 0" @click="shotBack">Cofnij rzut</button>
           <h2>Tabela wyników:</h2>
           <div class="flex-center" v-for="(shot, index) in logsOfShots" :key="`cwel${index}`">
             {{ shot.userName }}, {{ shot.shotIndexOfUser }}, {{ shot.shotPoints}},
@@ -100,13 +101,11 @@ export default {
           user.isSelected = false;
           endArr.push(user);
         })
-        console.log(endArr)
         this.existUsers = endArr;
 
       });
     },
     startGame() {
-      console.log(this.selectedUsers.length)
       if(!(this.selectedUsers.length === 0)) {
         this.gameInProgress = true;
       setTimeout(() => {
@@ -121,18 +120,28 @@ export default {
       }
     },
     makeShots(shotEvent) {
-      console.log(shotEvent.detail.score);
       this.selectedUsers[this.selectedUserIndex].shots += 1;
       this.selectedUsers[this.selectedUserIndex].pointsToWin -= shotEvent.detail.score;
-      console.log('pointsToWin', this.selectedUsers[this.selectedUserIndex].pointsToWin);
-      console.log('shots', this.selectedUsers[this.selectedUserIndex].shots)
       this.logsOfShots.push({
         userName: this.selectedUsers[this.selectedUserIndex].userName,
         shotIndexOfUser: this.selectedUsers[this.selectedUserIndex].shots,
         shotPoints: shotEvent.detail.score,
-        pointsToWin: this.selectedUsers[this.selectedUserIndex].pointsToWin
+        pointsToWin: this.selectedUsers[this.selectedUserIndex].pointsToWin,
+        userData: this.selectedUsers[this.selectedUserIndex],
         })
-
+    },
+    shotBack() {
+      const fireKeyIsSame = (element, key) => {
+        return element.fireKey === key;
+      }
+      const lastShot = this.logsOfShots.pop();
+      const userWhoShotFireKey = lastShot.userData.fireKey;
+      this.selectedUsers.forEach((user) => {
+        if(user.fireKey === userWhoShotFireKey) {
+          user.shots -= 1;
+          user.pointsToWin += lastShot.shotPoints;
+        }
+      })
     },
     nextPlayer() {
       if (this.selectedUserIndex === this.selectedUsers.length - 1) {
@@ -140,7 +149,6 @@ export default {
       } else {
         this.selectedUserIndex += 1;
       }
-      console.log(this.selectedUsers[this.selectedUserIndex])
     }
   },
 };
