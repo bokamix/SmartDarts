@@ -3,7 +3,7 @@ import d3 from './d3'
 import './dartboard.css'
 
 const defaultOptions = {
-    size: 500,
+    size: null,
     borderPercent: 10,
     doublePercent: 10,
     outerSinglePercent: 25,
