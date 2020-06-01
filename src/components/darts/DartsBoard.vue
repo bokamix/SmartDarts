@@ -90,7 +90,13 @@
       />
     </div>
     <div class="restart-button" @click="restart">Restart</div>
-    <div v-if="gameInProgress" class="stats-button" @click="saveMathStats">Zapisz statystyki</div>
+    <div
+      v-if="gameInProgress && !statsIsSave && logsOfShots.length > 0"
+      class="stats-button"
+      @click="saveStats"
+    >
+      Zapisz statystyki
+    </div>
   </div>
 </template>
 <script>
@@ -115,6 +121,7 @@ export default {
       eventClick : '',
       gifSrc: '200w_d.gif',
       gifsIndex: 1,
+      statsIsSave: false,
       gifs: [
         'awesome.gif',
         '200w_d.gif',
@@ -222,14 +229,13 @@ export default {
         })
         // this.pushStatistics(this.selectedUsers[this.selectedUserIndex].fireKey, shotEvent.detail)
     },
-    saveMathStats() {
-      this.logsOfShots.forEach((log) => {
-        console.log(log)
-      });
+    saveStats() {
+      this.statsIsSave = true;
+      this.pushMatchStats(this.logsOfShots);
     },
-    pushStatisticsForPlayer(userFireKey, shotData) {
-      const key = `users/${userFireKey}/shotsLogs`
-      pushToFirebase(key, shotData);
+    pushMatchStats(stats) {
+      const key = `matches/`
+      pushToFirebase(key, stats);
     },
     shotBack() {
       const fireKeyIsSame = (element, key) => {
