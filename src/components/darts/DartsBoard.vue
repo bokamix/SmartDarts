@@ -219,7 +219,7 @@ export default {
       }
       this.selectedUsers[this.selectedUserIndex].shots += 1;
       this.selectedUsers[this.selectedUserIndex].pointsToWin -= shotEvent.detail.score;
-      this.logsOfShots.push({
+      this.logsOfShots.unshift({
         userName: this.selectedUsers[this.selectedUserIndex].userName,
         shotIndexOfUser: this.selectedUsers[this.selectedUserIndex].shots,
         shotPoints: shotEvent.detail.score,
@@ -241,7 +241,7 @@ export default {
       const fireKeyIsSame = (element, key) => {
         return element.fireKey === key;
       }
-      const lastShot = this.logsOfShots.pop();
+      const lastShot = this.logsOfShots.shift();
       const userWhoShotFireKey = lastShot.userData.fireKey;
       this.selectedUsers.forEach((user) => {
         if(user.fireKey === userWhoShotFireKey) {
