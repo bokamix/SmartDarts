@@ -4,6 +4,10 @@
       width="300"
       src="@/assets/logo.svg"
     />
+    <div class="menu-wrapper">
+      <router-link to="/">Start</router-link>
+      <router-link to="/dashboard">Stats</router-link>
+    </div>
     <router-view/>
   </div>
 </template>
@@ -16,7 +20,6 @@
   text-align: center;
   color: #2c3e50;
 }
-
 #nav {
   padding: 30px;
 
@@ -27,6 +30,17 @@
     &.router-link-exact-active {
       color: #42b983;
     }
+  }
+}
+.menu-wrapper {
+  position: absolute;
+  bottom: 30px;
+  right: 40px;
+  a {
+    padding: 30px;
+    text-decoration: none;
+    color: black;
+    font-size: 30px;
   }
 }
 </style>
