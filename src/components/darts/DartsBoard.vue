@@ -20,15 +20,33 @@
               Następny gracz
             </div>
           </div>
+          <div v-if="selectedUsers[selectedUserIndex].pointsToWin<=301">
+            <span v-bind="canWin()"></span>
+              <h1 style="color: orange" v-if="userCanWin &&
+              selectedUsers[selectedUserIndex].pointsToWin<=180">
+              Uwaga! Możesz zakończyć rzucając: </h1>
+                <h2 style="color: orange" v-if="userCanWin">
+                  <span v-if="doubleToWin && availablePoints.includes(doubleToWin)">
+                    2 x {{doubleToWin}}
+                  </span>
+                  <span v-if="doubleToWin && tripleToWin && availablePoints.includes(doubleToWin) &&
+                    availablePoints.includes(tripleToWin)">
+                    LUB
+                  </span>
+                  <span v-if="tripleToWin && availablePoints.includes(tripleToWin)">
+                    3 x {{tripleToWin}}
+                  </span>
+                </h2>
+            </div>
           <h2>Tabela wyników:</h2>
           <div class="flex-center players-table">
-             <div
-                class="table-item flex-center m-2"
-                v-for="(user, index) in selectedUsers"
-                :key="`dupa${index}`"
-              >
-                <h2>{{ user.userName }}:</h2><h2>{{ user.pointsToWin }}</h2>
-              </div>
+            <div
+              class="table-item flex-center m-2"
+              v-for="(user, index) in selectedUsers"
+              :key="`dupa${index}`"
+            >
+              <h2>{{ user.userName }}:</h2><h2>{{ user.pointsToWin }}</h2>
+            </div>
           </div>
           <div class="shots-log ">
             <div class="flex-center"
@@ -135,6 +153,13 @@ export default {
         '8.gif',
       ],
       showGif: false,
+      userCanWin: false,
+      tripleToWin: '',
+      doubleToWin: '',
+      availablePoints: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+        14, 15, 16, 17, 18, 19, 20, 2, 4, 6, 8, 10, 12, 14, 16, 18,
+        20, 22, 24, 25, 26, 28, 30, 32, 34, 36, 38, 40, 3, 6, 9, 12, 15,
+        18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 50, 51, 54, 57, 60]
     };
   },
   mounted() {
@@ -167,7 +192,7 @@ export default {
     createUser() {
       const user = {
         userName: this.userName,
-        userPassword: this.userPassword ,
+        userPassword: this.userPassword,
       }
       this.existUsers.push({...user, pointsToWin: this.pointToWin, shots: 0, isSelected: false});
       this.userName = '';
@@ -187,6 +212,21 @@ export default {
         this.existUsers = endArr;
 
       });
+    },
+    canWin() {
+      if((this.selectedUsers[this.selectedUserIndex].pointsToWin%3 === 0 &&
+        this.availablePoints.includes(this.selectedUsers[this.selectedUserIndex].pointsToWin/3)) ||
+        (this.selectedUsers[this.selectedUserIndex].pointsToWin%2 === 0) &&
+        this.availablePoints.includes(this.selectedUsers[this.selectedUserIndex].pointsToWin/2)){
+        this.userCanWin = true;
+        this.tripleToWin = this.selectedUsers[this.selectedUserIndex].pointsToWin/3
+        this.doubleToWin = this.selectedUsers[this.selectedUserIndex].pointsToWin/2
+      }
+      else{
+        this.userCanWin = false;
+        this.tripleToWin = '';
+        this.doubleToWin = '';
+      }
     },
     startGame() {
       if(!(this.selectedUsers.length === 0)) {
