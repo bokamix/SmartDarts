@@ -230,6 +230,7 @@ export default {
     },
     startGame() {
       if(!(this.selectedUsers.length === 0)) {
+        this.selectedUsers = this.selectedUsers.sort((a, b) => 0.5 - Math.random())
         this.gameInProgress = true;
       setTimeout(() => {
         const dartboard = new Dartboard('#dartboard');
